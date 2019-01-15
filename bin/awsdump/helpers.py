@@ -13,11 +13,14 @@ def aws_get_credentials_for_assumed_role(arn):
             Returns a credentials dict to be used in boto3.client calls"""
     try:
         sts_client = boto3.client('sts')
+    except Exception, e:
+        raise Exception("Exception in aws_get_credentials_for_assumed_role boto3_client('sts') for %s: %s" % (arn, str(e)))
+    try:
         assumed_role_object=sts_client.assume_role(
             RoleArn=arn,
             RoleSessionName="blah")
     except Exception, e:
-        raise Exception("Exception in aws_get_credentials_for_assumed_role for %s: %s" % (arn, str(e)))
+        raise Exception("Exception in aws_get_credentials_for_assumed_role sts_client.assume_role for %s: %s" % (arn, str(e)))
     else:
         return assumed_role_object['Credentials']
 

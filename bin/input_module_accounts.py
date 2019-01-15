@@ -30,12 +30,18 @@ def collect_events(helper, ew):
 
     loglevel = helper.get_log_level()
     helper.set_log_level(loglevel)
+    proxy = helper.get_proxy()
     opt_role_to_list_accounts = helper.get_arg('role_to_list_accounts')
 
     helper.log_info("Starting list-accounts operation")
-    accounts = awsdump.aws_list_accounts(opt_role_to_list_accounts)
-    helper.log_info("Got %s accounts back" % len(accounts))
+    if proxy.get('proxy_url', False):
+        helper.log_debug(proxy)
+        os.environ["HTTP_PROXY"] = "http://%s:%s" % (proxy['proxy_url'], proxy['proxy_port'])
+        os.environ["HTTPS_PROXY"] = "http://%s:%s" % (proxy['proxy_url'], proxy['proxy_port'])
+        os.environ["NO_PROXY"] = "169.254.169.254"
+    accounts = awsdump.helpers.aws_list_accounts(opt_role_to_list_accounts)
+    helper.log_debug("Got %s accounts back" % len(accounts))
     for account in accounts:
-        data = json.dumps(account, default=json_serial, indent=2, sort_keys=True)
+        data = json.dumps(account, default=awsdump.helpers.json_serial, indent=2, sort_keys=True)
         event = helper.new_event(data, time=None, host=None, index=None, source=None, sourcetype=None, done=True, unbroken=True)
         ew.write_event(event)
