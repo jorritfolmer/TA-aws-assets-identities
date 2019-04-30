@@ -5,7 +5,6 @@
 1. It enumerates all accounts from an AWS Organizations master account
 2. It describes the following resources in every AWS region and in every account previously found:
    * EC2 instances
-   * S3 buckets and their policy
    * (more to come)
 
 ## Why does this add-on exist?
@@ -41,6 +40,6 @@ Create a new "EC2" input:
    * Specify a role within the AWS master account to assume, and is allowed to perform ListAccounts (e.g. arn:aws:iam::123456789:role/tf-list-accounts-role
    * Specify the last constant part of the arn in every account that is allowed to perform DescibeInstances (e.g. tf-ec2-describe-role)
 
-This requires some setup up front by your friendly AWS administrator. Every account, and every new account should contain a role that this input is allowed to assume, and is allowed to perform DescribeInstances. Since you're in AWS, this should probably be automated ad fundum anyway.
+This requires some upfront setup by your friendly AWS administrator. Every account, and every new account should contain a role that this input is allowed to assume, and is allowed to perform DescribeInstances. Since you're in AWS, this should probably be automated anyway.
 
 
